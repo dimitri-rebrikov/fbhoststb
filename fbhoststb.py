@@ -37,6 +37,7 @@ hosts = fh.get_hosts_info()
 
 # compare stored with current and update
 changed=False
+bot=None
 for index, host in enumerate(hosts):
     mac = host.get('mac')
     ip = host.get('ip')
@@ -60,7 +61,8 @@ for index, host in enumerate(hosts):
         # set the flag that the data has changed
         changed = True
         # sent the message over Telegram Bot
-        bot = telegram.Bot(token = config['telegram']['token'])
+        if bot == None:
+            bot = telegram.Bot(token = config['telegram']['token'])
         bot.send_message(chat_id = config['telegram']['chatId'],
             text='{status} {name} on {network}'.format(**newHost) 
         )
