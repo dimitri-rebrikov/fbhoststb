@@ -1,0 +1,16 @@
+{
+    "storage" : "./fbhoststb.stor",
+    "fritzbox" : {
+        "address" : "fritz.box",
+        "user" : "fritzbox",
+        "password" : "<password>"
+    },
+    "telegram" : {
+        "token" : "<TokenOfYourTelegramBot>",
+        "chatId" : <YourUserOrGroupOrChatID>
+    },
+    "networkMapping" : {
+        "192.168.178" : "home",
+        "192.168.179" : "guest"
+    }
+}
