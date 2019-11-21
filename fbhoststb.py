@@ -64,7 +64,7 @@ for index, host in enumerate(hosts):
         if bot == None:
             bot = telegram.Bot(token = config['telegram']['token'])
         bot.send_message(chat_id = config['telegram']['chatId'],
-            text='{status} {name} on {network}'.format(**newHost) 
+            text='{name} {status} @ {network}'.format(**newHost) 
         )
 
 if changed:
