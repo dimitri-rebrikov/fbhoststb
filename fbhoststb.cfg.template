@@ -7,7 +7,7 @@
     },
     "telegram" : {
         "token" : "<TokenOfYourTelegramBot>",
-        "chatId" : <YourUserOrGroupOrChatID>
+        "chatId" : <YourChatID>
     },
     "networkMapping" : {
         "192.168.178" : "home",
