@@ -17,5 +17,5 @@ Remark#2: I assume you are already using Telegram
 * The program will first send you all current hosts over the Telegram
 * After that the programm will check for changes ever 30th second and send only the changes
 * To stop the program use Ctrl+C or "kill"
-* To start the program during each boot you might use the special crontab "@reboot" function:  "@reboot cd fbhoststb && python3 fbhoststb.py"
+* To start the program during each boot you might use the special crontab "@reboot" function:  "@reboot cd fbhoststb && python3 fbhoststb.py >> fbhoststb.log 2>&1"
 
