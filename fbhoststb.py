@@ -5,6 +5,10 @@ import os
 from time import localtime, strftime, sleep
 import sys
 
+# function to provide formatted time
+def getFormattedTime():
+    return strftime("%Y-%m-%d %H:%M:%S", localtime())
+
 # function to detect the network 
 # based on netnwork address prefixes 
 def detectNetworkName(networkMapping, ip):
@@ -31,14 +35,24 @@ if os.path.isfile(config['storage']):
     storage=json.load(f)
     f.close()
 
+# initalize Fritz Box connection
+fh = fc.FritzHosts(**config['fritzbox'])
+# initialize Telegram connection
+bot = telegram.Bot(token = config['telegram']['token'])
+
 while True: # infinite loop
     # load current hosts from FritzBox
-    fh = fc.FritzHosts(**config['fritzbox'])
-    hosts = fh.get_hosts_info()
-
+    try:
+        hosts = fh.get_hosts_info()
+    except KeyError:
+        # the KeyError happens sporadically 
+        print('{}: got KeyError from FritzBox get_hosts_info()\n'.format(getFormattedTime()))
+        # prevent high frequent polling if the error happens permanently
+        sleep(5)
+        # retry
+        continue
     # compare stored with current and update
     changed=False
-    bot=None
     for index, host in enumerate(hosts):
         mac = host.get('mac')
         ip = host.get('ip')
@@ -55,17 +69,19 @@ while True: # infinite loop
                 'name': name,
                 'network': detectNetworkName(config['networkMapping'],ip),
                 'status': status, 
-                'time': strftime("%Y-%m-%d %H:%M:%S", localtime()),
+                'time': getFormattedTime(),
             }
             # store the new host entry (overwriting the old one if there)
             storage[mac] = newHost
             # set the flag that the data has changed
             changed = True
+            # prepare the message send it to stdout
+            msg = '{name} {status} @ {network}'.format(**newHost)
+            print('{}: {}\n'.format(getFormattedTime(), msg))
             # sent the message over Telegram Bot
-            if bot == None:
-                bot = telegram.Bot(token = config['telegram']['token'])
-            bot.send_message(chat_id = config['telegram']['chatId'],
-                text='{name} {status} @ {network}'.format(**newHost) 
+            bot.send_message(
+                chat_id = config['telegram']['chatId'],
+                text = msg
             )
 
     if changed:
