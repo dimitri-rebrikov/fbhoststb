@@ -2,7 +2,7 @@ import fritzconnection as fc
 import json
 import telegram
 import os
-from time import localtime, strftime
+from time import localtime, strftime, sleep
 import sys
 
 # function to detect the network 
@@ -31,45 +31,48 @@ if os.path.isfile(config['storage']):
     storage=json.load(f)
     f.close()
 
-# load current hosts from FritzBox
-fh = fc.FritzHosts(**config['fritzbox'])
-hosts = fh.get_hosts_info()
+while True: # infinite loop
+    # load current hosts from FritzBox
+    fh = fc.FritzHosts(**config['fritzbox'])
+    hosts = fh.get_hosts_info()
 
-# compare stored with current and update
-changed=False
-bot=None
-for index, host in enumerate(hosts):
-    mac = host.get('mac')
-    ip = host.get('ip')
-    name = host.get('name')
-    # decode the connection status
-    status = 'connected' if host.get('status') == '1' else 'disconnected'
-    # get the stored host info 
-    storedHost = storage.get(mac)
-    if storedHost == None or storedHost.get('ip') != ip or storedHost.get('status') != status:
-        # if there is no stored host or the ip or status has changed 
-        # create the new host entry
-        newHost = {
-            'ip': ip, 
-            'name': name,
-            'network': detectNetworkName(config['networkMapping'],ip),
-            'status': status, 
-            'time': strftime("%Y-%m-%d %H:%M:%S", localtime()),
-        }
-        # store the new host entry (overwriting the old one if there)
-        storage[mac] = newHost
-        # set the flag that the data has changed
-        changed = True
-        # sent the message over Telegram Bot
-        if bot == None:
-            bot = telegram.Bot(token = config['telegram']['token'])
-        bot.send_message(chat_id = config['telegram']['chatId'],
-            text='{name} {status} @ {network}'.format(**newHost) 
-        )
+    # compare stored with current and update
+    changed=False
+    bot=None
+    for index, host in enumerate(hosts):
+        mac = host.get('mac')
+        ip = host.get('ip')
+        name = host.get('name')
+        # decode the connection status
+        status = 'connected' if host.get('status') == '1' else 'disconnected'
+        # get the stored host info 
+        storedHost = storage.get(mac)
+        if storedHost == None or storedHost.get('ip') != ip or storedHost.get('status') != status:
+            # if there is no stored host or the ip or status has changed 
+            # create the new host entry
+            newHost = {
+                'ip': ip, 
+                'name': name,
+                'network': detectNetworkName(config['networkMapping'],ip),
+                'status': status, 
+                'time': strftime("%Y-%m-%d %H:%M:%S", localtime()),
+            }
+            # store the new host entry (overwriting the old one if there)
+            storage[mac] = newHost
+            # set the flag that the data has changed
+            changed = True
+            # sent the message over Telegram Bot
+            if bot == None:
+                bot = telegram.Bot(token = config['telegram']['token'])
+            bot.send_message(chat_id = config['telegram']['chatId'],
+                text='{name} {status} @ {network}'.format(**newHost) 
+            )
 
-if changed:
-    # if there are changes
-    # sore the data 
-    f = open(config['storage'], 'w')
-    json.dump(storage, f, sort_keys=True, indent=4)
-    f.close()
+    if changed:
+        # if there are changes
+        # store the data 
+        f = open(config['storage'], 'w')
+        json.dump(storage, f, sort_keys=True, indent=4)
+        f.close()
+
+    sleep(30)
