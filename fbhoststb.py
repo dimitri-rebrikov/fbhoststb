@@ -46,7 +46,7 @@ while True: # infinite loop
         hosts = fh.get_hosts_info()
     except KeyError:
         # the KeyError happens sporadically 
-        print('{}: got KeyError from FritzBox get_hosts_info()\n'.format(getFormattedTime()))
+        print('{}: got KeyError from FritzBox get_hosts_info()'.format(getFormattedTime()))
         # prevent high frequent polling if the error happens permanently
         sleep(5)
         # retry
@@ -77,7 +77,7 @@ while True: # infinite loop
             changed = True
             # prepare the message send it to stdout
             msg = '{name} {status} @ {network}'.format(**newHost)
-            print('{}: {}\n'.format(getFormattedTime(), msg))
+            print('{}: {}'.format(getFormattedTime(), msg))
             # sent the message over Telegram Bot
             bot.send_message(
                 chat_id = config['telegram']['chatId'],
