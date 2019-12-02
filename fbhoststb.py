@@ -24,16 +24,14 @@ configFilePath='./fbhoststb.cfg'
 if len(sys.argv) > 1:
     configFilePath=sys.argv[1]
 # load config
-configFile = open(configFilePath, 'r')
-config = json.load(configFile)
-configFile.close()
+with open(configFilePath, 'r') as configFile:
+    config = json.load(configFile)
 
 storage={}
 # load stored hosts
 if os.path.isfile(config['storage']):
-    f = open(config['storage'], 'r')
-    storage=json.load(f)
-    f.close()
+    with open(config['storage'], 'r') as f:
+        storage=json.load(f)
 
 # initalize Fritz Box connection
 fh = fc.FritzHosts(**config['fritzbox'])
@@ -87,8 +85,7 @@ while True: # infinite loop
     if changed:
         # if there are changes
         # store the data 
-        f = open(config['storage'], 'w')
-        json.dump(storage, f, sort_keys=True, indent=4)
-        f.close()
-
+        with open(config['storage'], 'w') as f:
+            json.dump(storage, f, sort_keys=True, indent=4)
+ 
     sleep(30)
