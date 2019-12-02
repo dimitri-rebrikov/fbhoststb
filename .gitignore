@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 fbhoststb.cfg
 fbhoststb.stor
+history/

@@ -18,6 +18,10 @@ def detectNetworkName(networkMapping, ip):
     # don't found any matching name: use just the ip
     return ip
 
+# history file name
+def getHistoryFileName():
+    return '{}.dat'.format(strftime("%Y-%m-%d", localtime()))
+
 # default path to the config file
 configFilePath='./fbhoststb.cfg'
 # the path to the config file might be provided as 1st parameter
@@ -26,6 +30,9 @@ if len(sys.argv) > 1:
 # load config
 with open(configFilePath, 'r') as configFile:
     config = json.load(configFile)
+
+# create history dir
+os.makedirs(config['historyDir'], exist_ok=True)
 
 storage={}
 # load stored hosts
@@ -81,6 +88,17 @@ while True: # infinite loop
                 chat_id = config['telegram']['chatId'],
                 text = msg
             )
+            # write into history
+            with open('{dir}/{file}'.format(
+                    dir=config['historyDir'], 
+                    file=getHistoryFileName()),'a') as f:
+                historyEntry = {
+                    'mac':mac,  
+                    'message':msg
+                }
+                historyEntry.update(newHost)
+                json.dump(historyEntry, f)
+                f.write('\n')
 
     if changed:
         # if there are changes
