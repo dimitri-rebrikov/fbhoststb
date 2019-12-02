@@ -1,6 +1,6 @@
 {
     "storage" : "./fbhoststb.stor",
-    "historyDir" : "./",
+    "historyDir" : "./history",
     "fritzbox" : {
         "address" : "fritz.box",
         "user" : "fritzbox",
