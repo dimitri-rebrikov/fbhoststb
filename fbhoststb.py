@@ -12,9 +12,10 @@ def getFormattedTime():
 # function to detect the network 
 # based on netnwork address prefixes 
 def detectNetworkName(networkMapping, ip):
-    for network in networkMapping.keys():
-        if ip.startswith(network):
-            return networkMapping[network]
+    if ip != None:
+        for network in networkMapping.keys():
+            if ip.startswith(network):
+                return networkMapping[network]
     # don't found any matching name: use just the ip
     return ip
 
