@@ -69,6 +69,10 @@ while True: # infinite loop
         storedHost = storage.get(mac)
         if storedHost == None or storedHost.get('ip') != ip or storedHost.get('status') != status:
             # if there is no stored host or the ip or status has changed 
+            #
+            # get the interface (i.e. LAN/WiFI etc) from details           
+            hostDetails = fh.get_specific_host_entry(host.get('mac'))
+            interface = hostDetails.get('NewInterfaceType')
             # create the new host entry
             newHost = {
                 'ip': ip, 
@@ -76,13 +80,14 @@ while True: # infinite loop
                 'network': detectNetworkName(config['networkMapping'],ip),
                 'status': status, 
                 'time': getFormattedTime(),
+                'interface': config['interfaceMapping'].get(interface, interface)
             }
             # store the new host entry (overwriting the old one if there)
             storage[mac] = newHost
             # set the flag that the data has changed
             changed = True
             # prepare the message send it to stdout
-            msg = '{name} {status} @ {network}'.format(**newHost)
+            msg = '{name} {status} @ {network}({interface})'.format(**newHost)
             print('{}: {}'.format(getFormattedTime(), msg))
             # sent the message over Telegram Bot
             bot.send_message(

@@ -13,5 +13,10 @@
     "networkMapping" : {
         "192.168.178" : "home",
         "192.168.179" : "guest"
+    },
+    "interfaceMapping" : {
+        "Ethernet" : "LAN",
+        "802.11" : "WiFi", 
+        "HomePlug" : "dLAN"
     }
 }
