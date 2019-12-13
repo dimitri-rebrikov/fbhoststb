@@ -50,11 +50,12 @@ while True: # infinite loop
     # load current hosts from FritzBox
     try:
         hosts = fh.get_hosts_info()
-    except KeyError:
-        # the KeyError happens sporadically 
-        print('{}: got KeyError from FritzBox get_hosts_info()'.format(getFormattedTime()))
+    except :
+        # the errors happen sporadically 
+        print('{}: got Exception from FritzBox get_hosts_info(): {}'
+            .format(getFormattedTime(), sys.exc_info()[0]))
         # prevent high frequent polling if the error happens permanently
-        sleep(5)
+        sleep(10)
         # retry
         continue
     # compare stored with current and update
