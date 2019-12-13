@@ -3,12 +3,18 @@ Small tool to send Telegram notification about devices connecting/disconnecting 
 
 ## installation
 Remark: Examples show how I did it on my RaspberryPi 3
+
 Remark#2: I assume you are already using Telegram
+
 * Create your telegram bot (google how to do it)
 * Notice the token of your bot
 * Communicate once with your bot so the bot gets the permission to communicate with you
-* Install python-telegram-bot: sudo apt-get install python3-pip && sudo pip3 install python-telegram-bot
-* Install fritzconnection: sudo apt-get install libxslt-dev && sudo pip3 install fritzconnection
+* Install python3 if not already installed
+* Install python3's pip: sudo apt-get install python3-pip
+* Install python3's lxml library: sudo apt-get install python3-lxml
+* If your distribution does not have python3-lxml package you might try to install it over pip: sudo apt-get install libxslt-dev && sudo pip3 install lxml
+* Install python-telegram-bot: sudo pip3 install python-telegram-bot
+* Install fritzconnection: sudo pip3 install fritzconnection
 * Write something to your bot and then start the getchatid.py: python3 getchatid.py \<TokenOfYourBot\>
 * Notice your chatId
 * Rename fbhoststb.cfg.template into fbhoststb.cfg
