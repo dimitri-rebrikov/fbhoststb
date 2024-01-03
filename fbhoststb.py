@@ -47,6 +47,11 @@ async def main():
     fh = FritzHosts(**config['fritzbox'])
     # initialize Telegram connection
     bot = telegram.Bot(token = config['telegram']['token'])
+    async with bot:
+        await bot.send_message(
+            chat_id = config['telegram']['chatId'],
+            text = 'fbhoststb started'
+        )
 
     while True: # infinite loop
         # load current hosts from FritzBox
